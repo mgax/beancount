@@ -7,7 +7,7 @@ __author__ = "Martin Blais <blais@furius.ca>"
 
 import os
 from os.path import join, isfile
-from distutils.core import setup
+from setuptools import setup
 
 
 # Install all scripts under bin.
