@@ -571,12 +571,12 @@ class Ledger(object):
     desc_re = re.compile('(?:\s*([^|]+?)\s*\|)?\s*([^|]*?)\s*$')
 
     # Pattern for an amount.
-    commodity_re = re.compile('"?([A-Za-z][A-Za-z0-9.~\']*)"?')
+    commodity_re = re.compile('"?([\w][\w\d.~\']*)"?')
     amount_re = re.compile('([-+]?\d*(?:\.\d*)?)\s+%(comm)s' %
                            {'comm': commodity_re.pattern})
 
     # Pattern for an account (note: we don't allow spaces in this version).
-    account_re = re.compile('[:A-Za-z0-9-_]+')
+    account_re = re.compile('[:\w\d\-_]+')
     postaccount_re = re.compile('(?:%(accname)s|\[%(accname)s\]|\(%(accname)s\))' %
                                 {'accname': account_re.pattern})
 
@@ -592,7 +592,8 @@ class Ledger(object):
          ')') %  # price/note
         {'amount': amount_re.pattern,
          'account': postaccount_re.pattern,
-         'commodity': commodity_re.pattern})
+         'commodity': commodity_re.pattern},
+        re.UNICODE)
 
     # Pattern for the directives, and the special commands.
     directive_re = re.compile('^@([a-z_]+)\s+([^;]*)(;.*)?')
@@ -1424,7 +1425,8 @@ class CheckDirective(object):
     mre = re.compile("\s*%(date)s\s+(%(account)s)\s+%(amount)s\s*$" %
                      {'date': Ledger.date_re.pattern,
                       'account': Ledger.account_re.pattern,
-                      'amount': Ledger.amount_re.pattern})
+                      'amount': Ledger.amount_re.pattern},
+                     re.UNICODE)
 
     def __init__(self, ledger):
         self.checks = []
@@ -1505,7 +1507,8 @@ class DefineAccountDirective(object):
     mre = re.compile(("\s*(D[re]|Cr)\s+(%(account)s)\s+"
                       "((?:%(commodity)s(?:,\s*)?)*)\s*$") %
                      {'account': Ledger.account_re.pattern,
-                      'commodity': Ledger.commodity_re.pattern})
+                      'commodity': Ledger.commodity_re.pattern},
+                     re.UNICODE)
 
     def __init__(self, ledger):
         self.definitions = {}
@@ -1573,8 +1576,9 @@ class DefineCommodityDirective(object):
 
     market_re = re.compile('"?"?')
 
-    mre = re.compile("\s*%(commodity)s\s+([A-Za-z-][A-Za-z0-9:.-]*)\s+(.+)\s*$" %
-                     {'commodity': Ledger.commodity_re.pattern})
+    mre = re.compile("\s*%(commodity)s\s+([\w-][\w\d:.-]*)\s+(.+)\s*$" %
+                     {'commodity': Ledger.commodity_re.pattern},
+                     re.UNICODE)
 
     def __init__(self, ledger):
         self.commnames = {}
@@ -1671,7 +1675,8 @@ class AutoPadDirective(object):
 
     mre = re.compile("\s*(?:%(date)s)\s+(%(account)s)\s+(%(account)s)\s*$" %
                      {'date': Ledger.date_re.pattern,
-                      'account': Ledger.account_re.pattern})
+                      'account': Ledger.account_re.pattern},
+                     re.UNICODE)
 
     def __init__(self, ledger, checkdir):
         self.pads = []
@@ -1820,9 +1825,10 @@ class DefvarDirective(object):
     name = 'var'
     prio = 2000
 
-    mre = re.compile("\s*(?P<module>[a-zA-Z0-9]+)"
-                     "\s+(?P<varname>[a-zA-Z0-9]+)"
-                     "\s+(?P<value>.+)\s*$")
+    mre = re.compile("\s*(?P<module>[\w\d]+)"
+                     "\s+(?P<varname>[\w\d]+)"
+                     "\s+(?P<value>.+)\s*$",
+                     re.UNICODE)
 
     def __init__(self, ledger):
 
