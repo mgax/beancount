@@ -282,7 +282,7 @@ class Transaction(Dated):
     def __str__(self):
         "Produce a basic rendering for debugging."
         lines = [self.fulldate() + ' ' + self.topline()]
-        lines.extend(str(post) for post in self.postings)
+        lines.extend(unicode(post) for post in self.postings)
         return os.linesep.join(lines)
 
     def pretty(self):

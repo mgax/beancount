@@ -811,7 +811,7 @@ def page__ledger(app, ctx):
     style = ctx.session.get('style', 'full')
     assert style in ('compact', 'other', 'only', 'full')
 
-    accname = getattr(ctx, 'accname', '')
+    accname = getattr(ctx, 'accname', '').decode('utf-8')
     accname = accname.replace(websep, Account.sep)
     try:
         acc = ctx.ledger.get_account(accname)
