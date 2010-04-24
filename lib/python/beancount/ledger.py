@@ -28,6 +28,8 @@ from beancount.fallback.collections2 import namedtuple
 __all__ = ('Account', 'Transaction', 'Posting', 'Ledger',
            'CheckDirective')
 
+epsilon = 0.005
+
 oneday = timedelta(days=1)
 
 
@@ -1470,7 +1472,7 @@ class CheckDirective(object):
             balance = balance.mask_commodity(chk.commodity)
 
             if chk.flag is None:
-                chk.flag = '*' if (balance == expected) else '!'
+                chk.flag = '*' if (balance - expected > epsilon) else '!'
             chk.balance = balance
 
             # Note: it is contentious whether we should also round the number
