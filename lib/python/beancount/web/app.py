@@ -460,8 +460,8 @@ def page__income(app, ctx):
 
     ledger = ctx.ledger
 
-    i_acc = ledger.find_account(('Income', 'Revenue', 'Revenues'))
-    e_acc = ledger.find_account(('Expenses', 'Expense'))
+    i_acc = ledger.find_account(('Income', 'Revenue', 'Revenues', 'venit'))
+    e_acc = ledger.find_account(('Expenses', 'Expense', 'cheltuieli'))
     if None in (i_acc, e_acc):
         page.add(P("Could not get all unique income and expenses accounts.", CLASS="error"))
         return page.render(app)
